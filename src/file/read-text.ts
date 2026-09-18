@@ -1,4 +1,8 @@
-import { composeErrorMessage, UnexpectedError } from "@little-nebulae/error";
+import {
+  composeErrorMessage,
+  isError,
+  UnexpectedError,
+} from "@little-nebulae/error";
 import { fail, succeed } from "@little-nebulae/result";
 import {
   AccessDeniedSystemError,
@@ -17,9 +21,18 @@ import { readFile } from "node:fs/promises";
 
 import { DEFAULT_CHARACTER_ENCODING } from "@/constants";
 
-export async function readTextFile({ path }: { path: string }) {
+export async function readTextFile({
+  path,
+  signal,
+}: {
+  path: string;
+  signal?: AbortSignal;
+}) {
   try {
-    const text = await readFile(path, { encoding: DEFAULT_CHARACTER_ENCODING });
+    const text = await readFile(path, {
+      encoding: DEFAULT_CHARACTER_ENCODING,
+      signal,
+    });
     return succeed(text);
   } catch (error) {
     if (isErrnoException(error)) {
