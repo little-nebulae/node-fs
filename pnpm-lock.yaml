@@ -176,8 +176,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@little-nebulae/system-error':
-        specifier: 1.0.0
-        version: 1.0.0(@little-nebulae/error@1.0.1)(@little-nebulae/type-utils@1.0.0)
+        specifier: 2.0.0
+        version: 2.0.0(@little-nebulae/error@1.0.1)(@little-nebulae/type-utils@1.0.0)
       '@little-nebulae/type-utils':
         specifier: 1.0.0
         version: 1.0.0
@@ -393,8 +393,8 @@ packages:
   '@little-nebulae/result@1.0.0':
     resolution: {integrity: sha512-yetamyO3lwefhoXdemxPdjRLrI5yXJIm6ZwGi4KgiWKaQpfKi8myAuIjlzTkheUD/Z4hRnJmi/Sm9ovvCnxkqQ==}
 
-  '@little-nebulae/system-error@1.0.0':
-    resolution: {integrity: sha512-UitVQ2MD4cT5iXjJOylyD5aE+Qo8Cq2TTq8CBJr0tMNImKLVtk4dCEnCggEnRrslp7exxOGHvjXJ7bWnUHyytw==}
+  '@little-nebulae/system-error@2.0.0':
+    resolution: {integrity: sha512-Hw3TYg1SFDg5P1u0kNj1WL1X65mu9Htz2dzaCLuEIAGavRKdtP8nAKdz9VttP9mt9TU10snYKN4fDp0jDPHhew==}
     peerDependencies:
       '@little-nebulae/error': ^1.0.0
       '@little-nebulae/type-utils': ^1.0.0
@@ -1642,7 +1642,7 @@ snapshots:
 
   '@little-nebulae/result@1.0.0': {}
 
-  '@little-nebulae/system-error@1.0.0(@little-nebulae/error@1.0.1)(@little-nebulae/type-utils@1.0.0)':
+  '@little-nebulae/system-error@2.0.0(@little-nebulae/error@1.0.1)(@little-nebulae/type-utils@1.0.0)':
     dependencies:
       '@little-nebulae/error': 1.0.1
       '@little-nebulae/type-utils': 1.0.0
