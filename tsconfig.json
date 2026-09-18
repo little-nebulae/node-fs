@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "types": ["node", "vitest"],
+    "lib": ["ESNext"],
+    "target": "esnext",
+    "module": "preserve",
+    "moduleDetection": "force",
+    "allowJs": true,
+    "resolveJsonModule": true,
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*", "tsdown.config.ts", "vitest.config.ts"]
+}

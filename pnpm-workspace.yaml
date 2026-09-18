@@ -1,0 +1,12 @@
+# Dependency settings
+savePrefix: ""
+enableGlobalVirtualStore: true
+allowBuilds:
+  esbuild: true
+
+# Supply chain attack mitigation
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 1440
