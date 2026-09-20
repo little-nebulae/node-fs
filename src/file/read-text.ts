@@ -1,14 +1,6 @@
-import type { AbortedErrorCause, AbortError } from "@little-nebulae/error";
 import type { Result } from "@little-nebulae/result";
 
-import {
-  AbortedError,
-  composeErrorMessage,
-  isAbortError,
-  isTimeoutError,
-  TimedOutError,
-  UnexpectedError,
-} from "@little-nebulae/error";
+import { composeErrorMessage, UnexpectedError } from "@little-nebulae/error";
 import { fail, succeed } from "@little-nebulae/result";
 import {
   AccessDeniedSystemError,
@@ -36,14 +28,6 @@ export async function readTextFile({
 }): Promise<
   Result<
     string,
-    | AbortedError<
-        AbortedErrorCause,
-        | {
-            abortReason: any;
-          }
-        | { caughtError: unknown }
-      >
-    | TimedOutError<{ abortError: AbortError }>
     | AccessDeniedSystemError
     | FileTooBigSystemError
     | IsDirectorySystemError
@@ -63,52 +47,6 @@ export async function readTextFile({
     });
     return succeed(text);
   } catch (error) {
-    const operation = "read text file";
-
-    // We check for abort error before system error
-    // to prevent a race condition in Node's internals
-    // where Node might surface system error first
-    // even when the read is aborted
-    if (signal) {
-      const { aborted, reason } = signal;
-      if (aborted) {
-        const abortMessage = composeErrorMessage({
-          operation,
-          reason: "abort signal",
-        });
-        if (isAbortError(error)) {
-          const originalError = error.cause;
-          if (isTimeoutError(originalError)) {
-            const timeoutMessage = composeErrorMessage({
-              operation,
-              reason: "timeout",
-            });
-            return fail(
-              new TimedOutError({
-                message: timeoutMessage,
-                cause: originalError,
-                meta: { abortError: error },
-              }),
-            );
-          }
-          return fail(
-            new AbortedError({
-              message: abortMessage,
-              cause: error,
-              meta: { abortReason: signal?.reason },
-            }),
-          );
-        }
-        return fail(
-          new AbortedError({
-            message: abortMessage,
-            cause: { reason },
-            meta: { caughtError: error },
-          }),
-        );
-      }
-    }
-
     if (isErrnoException(error)) {
       const errno = -(error.errno ?? 0);
       switch (errno) {
@@ -200,7 +138,7 @@ export async function readTextFile({
     return fail(
       new UnexpectedError({
         message: composeErrorMessage({
-          operation,
+          operation: "read text file",
           reason: "some unexpected error",
         }),
         cause: error,
