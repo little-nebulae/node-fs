@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { assert, describe, expect } from "vitest";
 
 import { DEFAULT_CHARACTER_ENCODING } from "@/constants";
-import { writeTextFile } from "@/file/write-text";
+import { writeTextFile } from "@/ops/file/write-text";
 
 // Success cases
 describe("writeTextFile function should succeed", async () => {

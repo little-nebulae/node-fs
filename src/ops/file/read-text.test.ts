@@ -4,7 +4,7 @@ import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { assert, describe, expect } from "vitest";
 
-import { readTextFile } from "@/file/read-text";
+import { readTextFile } from "@/ops/file/read-text";
 
 // Success cases
 describe("readTextFile function should succeed when", async () => {
