@@ -1,4 +1,4 @@
-import type { AbortError } from "@little-nebulae/error";
+import type { AbortedErrorCause, AbortError } from "@little-nebulae/error";
 import type { Result } from "@little-nebulae/result";
 
 import {
@@ -37,10 +37,11 @@ export async function readTextFile({
   Result<
     string,
     | AbortedError<
-        AbortError,
-        {
-          abortReason: any;
-        }
+        AbortedErrorCause,
+        | {
+            abortReason: any;
+          }
+        | { caughtError: unknown }
       >
     | TimedOutError<{ abortError: AbortError }>
     | AccessDeniedSystemError
@@ -64,32 +65,44 @@ export async function readTextFile({
   } catch (error) {
     const operation = "read text file";
 
-    if (isAbortError(error)) {
-      const originalError = error.cause;
-      if (isTimeoutError(originalError)) {
-        const message = composeErrorMessage({
+    if (signal) {
+      const { aborted, reason } = signal;
+      if (aborted) {
+        const abortMessage = composeErrorMessage({
           operation,
-          reason: "timeout",
+          reason: "abort signal",
         });
+        if (isAbortError(error)) {
+          const originalError = error.cause;
+          if (isTimeoutError(originalError)) {
+            const timeoutMessage = composeErrorMessage({
+              operation,
+              reason: "timeout",
+            });
+            return fail(
+              new TimedOutError({
+                message: timeoutMessage,
+                cause: originalError,
+                meta: { abortError: error },
+              }),
+            );
+          }
+          return fail(
+            new AbortedError({
+              message: abortMessage,
+              cause: error,
+              meta: { abortReason: signal?.reason },
+            }),
+          );
+        }
         return fail(
-          new TimedOutError({
-            message,
-            cause: originalError,
-            meta: { abortError: error },
+          new AbortedError({
+            message: abortMessage,
+            cause: { reason },
+            meta: { caughtError: error },
           }),
         );
       }
-      const message = composeErrorMessage({
-        operation,
-        reason: "abort signal",
-      });
-      return fail(
-        new AbortedError({
-          message,
-          cause: error,
-          meta: { abortReason: signal?.reason },
-        }),
-      );
     }
 
     if (isErrnoException(error)) {
