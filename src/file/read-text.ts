@@ -1,6 +1,9 @@
 import {
+  AbortedError,
   composeErrorMessage,
-  isError,
+  isAbortError,
+  isTimeoutError,
+  TimedOutError,
   UnexpectedError,
 } from "@little-nebulae/error";
 import { fail, succeed } from "@little-nebulae/result";
@@ -35,6 +38,36 @@ export async function readTextFile({
     });
     return succeed(text);
   } catch (error) {
+    const operation = "read text file";
+
+    if (isAbortError(error)) {
+      const originalError = error.cause;
+      if (isTimeoutError(originalError)) {
+        const message = composeErrorMessage({
+          operation,
+          reason: "timeout",
+        });
+        return fail(
+          new TimedOutError({
+            message,
+            cause: originalError,
+            meta: { abortError: error },
+          }),
+        );
+      }
+      const message = composeErrorMessage({
+        operation,
+        reason: "abort signal",
+      });
+      return fail(
+        new AbortedError({
+          message,
+          cause: error,
+          meta: { abortReason: signal?.reason },
+        }),
+      );
+    }
+
     if (isErrnoException(error)) {
       const errno = -(error.errno ?? 0);
       switch (errno) {
@@ -122,10 +155,11 @@ export async function readTextFile({
         }
       }
     }
+
     return fail(
       new UnexpectedError({
         message: composeErrorMessage({
-          operation: "read text file",
+          operation,
           reason: "some unexpected error",
         }),
         cause: error,
