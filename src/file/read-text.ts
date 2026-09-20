@@ -65,6 +65,10 @@ export async function readTextFile({
   } catch (error) {
     const operation = "read text file";
 
+    // We check for abort error before system error
+    // to prevent a race condition in Node's internals
+    // where Node might surface system error first
+    // even when the read is aborted
     if (signal) {
       const { aborted, reason } = signal;
       if (aborted) {
