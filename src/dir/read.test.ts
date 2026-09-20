@@ -3,7 +3,7 @@ import { writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { assert, describe, expect } from "vitest";
 
-import { readDirectory } from "@/directory/read";
+import { readDirectory } from "@/dir/read";
 
 // Success cases
 describe("readDirectory function should succeed", async () => {
