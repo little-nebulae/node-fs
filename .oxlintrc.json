@@ -26,7 +26,11 @@
       "files": ["**/test/**", "**/*.test.ts", "**/*.test-d.ts"],
       "plugins": ["vitest"],
       "rules": {
-        "vitest/consistent-test-it": ["error", { "withinDescribe": "test" }]
+        "vitest/consistent-test-it": ["error", { "withinDescribe": "test" }],
+        "vitest/no-standalone-expect": [
+          "warn",
+          { "additionalTestBlockFunctions": ["fsTest"] }
+        ]
       }
     }
   ]
