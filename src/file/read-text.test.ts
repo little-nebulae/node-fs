@@ -1,3 +1,4 @@
+import { NoEntrySystemError } from "@little-nebulae/system-error";
 import { fsTest } from "@test/context";
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -17,6 +18,20 @@ describe("readTextFile function should succeed when", async () => {
       const readResult = await readTextFile({ path });
       assert(readResult.success);
       expect(readResult.data).toBe(content);
+    },
+  );
+});
+
+// Failure cases
+describe("readTextFile function should fail", async () => {
+  fsTest(
+    "with a NotDirectorySystemError when the specified path doesn't exist",
+    async ({ tempDirPath }) => {
+      const path = join(tempDirPath, "hello.txt");
+
+      const readResult = await readTextFile({ path });
+      assert(readResult.success === false);
+      expect(readResult.error).toBeInstanceOf(NoEntrySystemError);
     },
   );
 });
