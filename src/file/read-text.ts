@@ -1,3 +1,6 @@
+import type { AbortError } from "@little-nebulae/error";
+import type { Result } from "@little-nebulae/result";
+
 import {
   AbortedError,
   composeErrorMessage,
@@ -30,7 +33,28 @@ export async function readTextFile({
 }: {
   path: string;
   signal?: AbortSignal;
-}) {
+}): Promise<
+  Result<
+    string,
+    | AbortedError<
+        AbortError,
+        {
+          abortReason: any;
+        }
+      >
+    | TimedOutError<{ abortError: AbortError }>
+    | AccessDeniedSystemError
+    | FileTooBigSystemError
+    | IsDirectorySystemError
+    | NameTooLongSystemError
+    | NoEntrySystemError
+    | NotDirectorySystemError
+    | OutOfMemorySystemError
+    | OverflowSystemError
+    | PermissionDeniedSystemError
+    | UnexpectedError
+  >
+> {
   try {
     const text = await readFile(path, {
       encoding: DEFAULT_CHARACTER_ENCODING,
