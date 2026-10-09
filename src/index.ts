@@ -9,3 +9,5 @@ export * from "@/ops/file/write-text";
 
 export * from "@/ops/remove-fs-entry";
 export * from "@/ops/resolve-real-path";
+
+export * from "@/utils/generate-entry-name";
